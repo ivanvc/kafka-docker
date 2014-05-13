@@ -1,22 +1,11 @@
 #!/bin/bash
+set -eo pipefail
 
-zk_hosts=
-[[ -v ZK_PORT_2181_TCP_ADDR ]] && zk_hosts=$ZK_PORT_2181_TCP_ADDR 
+export ETCD=${ETCD_PORT_10000_TCP_ADDR}:${ETCD_PORT_10000_TCP_PORT}
 
-i=1
-while [ -v ZK_${i}_PORT_2181_TCP_ADDR ] ; do
-  zk_host=$(eval echo "\$ZK_${i}_PORT_2181_TCP_ADDR")
-  if [ -z "$zk_hosts" ] ; then
-    zk_hosts=$zk_host
-  else
-    zk_hosts=$zk_hosts,$zk_host
-  fi
-  i=$(expr $i + 1)
+until confd -onetime -node $ETCD -config-file /etc/confd/conf.d/kafka.toml; do
+  echo "[kafka] waiting for confd to refresh server.properties"
+  sleep 5
 done
-
-sed -r -i "s/(zookeeper.connect)=(.*)/\1=$zk_hosts/g" $KAFKA_HOME/config/server.properties
-sed -r -i "s/(broker.id)=(.*)/\1=$BROKER_ID/g" $KAFKA_HOME/config/server.properties
-sed -r -i "s/#(advertised.host.name)=(.*)/\1=$HOST_IP/g" $KAFKA_HOME/config/server.properties
-sed -r -i "s/^(port)=(.*)/\1=$PORT/g" $KAFKA_HOME/config/server.properties
 
 $KAFKA_HOME/bin/kafka-server-start.sh $KAFKA_HOME/config/server.properties

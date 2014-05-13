@@ -1,0 +1,7 @@
+[template]
+keys        = [ "services/zookeeper" ]
+owner       = "root"
+mode        = "0644"
+src         = "server.properties.tmpl"
+dest        = "/opt/kafka_2.8.0-0.8.1.1/config/server.properties"
+reload_cmd  = "/usr/bin/supervisorctl restart kafka"
