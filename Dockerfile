@@ -12,8 +12,8 @@ RUN mkdir -p /etc/confd/conf.d
 RUN mkdir -p /etc/confd/templates
 
 # Kafka
-RUN wget -q http://mirror.gopotato.co.uk/apache/kafka/0.8.1.1/kafka_2.8.0-0.8.1.1.tgz -O /tmp/kafka_2.8.0-0.8.1.1.tgz
-RUN tar xfz /tmp/kafka_2.8.0-0.8.1.1.tgz -C /opt && mv /opt/kafka_* /opt/kafka
+RUN wget -q http://archive.apache.org/dist/kafka/old_releases/kafka-0.7.2-incubating/kafka-0.7.2-incubating-src.tgz -O /tmp/kafka-0.7.2-incubating-src.tgz
+RUN tar xfz /tmp/kafka-0.7.2-incubating-src.tgz -C /opt && mv /opt/kafka* /opt/kafka
 
 # init scripts
 ENV KAFKA_HOME /opt/kafka
